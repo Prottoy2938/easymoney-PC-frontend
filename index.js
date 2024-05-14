@@ -58,21 +58,27 @@ bot.on('message', async (msg) => {
       snapshot.forEach(async (doc) => {
         const user = doc.data();
         const plan = user.plan;
-
+        console.log(msg);
         if (plan === 'ultimate') {
-
+          console.log({
+            personalCoaching: {
+              status: 'initiated',
+              lastUpdatedAt: admin.firestore.FieldValue.serverTimestamp(),
+              telegramUserDetails: msg.from.username,
+            },
+          });
           // Update document with personal coaching details
           await doc.ref.update({
             personalCoaching: {
               status: 'initiated',
               lastUpdatedAt: admin.firestore.FieldValue.serverTimestamp(),
-              telegramUsername: msg.from.username,
+              telegramUserDetails: msg.from,
             },
           });
 
           bot.sendMessage(
             chatId,
-            "You've been successfully sent request for personal coaching. The coaches will get back to you soon with updates."
+            "We've received your request for personal coaching. Soon one of the coach will get back to you. Thank you for your patience 🤝🏻"
           );
         } else {
           bot.sendMessage(
